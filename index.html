@@ -20,7 +20,7 @@
             background-image: url("img/background.png");
             width: 320px;
             height: 480px;
-            overflow:auto; /*избегаем выпадающих марджинов*/
+            overflow:hidden; /*избегаем выпадающих марджинов*/
         }
 
         .main-menu-title {
@@ -63,7 +63,7 @@
         .level-complete {
             position: absolute;
             left: 0;
-            top: 100px;
+            top: 50px;
         }
 
     </style>
@@ -74,7 +74,7 @@
 <div class="wrapper" ng-cloak>
     <div ng-if="main.state=='MainMenu'" class="window">
         <img src="img/mainMenuTitle.png" alt="Plus One" class="main-menu-title"/>
-        <button class="btn btn-primary" ng-click="main.state='Gameplay'">Play</button>
+        <button class="btn btn-primary" ng-click="main.startGame()">Play</button>
         <button class="btn btn-warning" ng-click="main.state='Credits'">Credits</button>
     </div>
 
@@ -107,10 +107,15 @@
     app.controller("MainController", function (Gameplay) {
         var vm = this;
 
-        vm.state = 'Gameplay';
-        vm.levelComplete = false;
+        vm.state = 'MainMenu';
 
-        vm.items = Gameplay.getItems();
+        function startGame() {
+            vm.state = 'Gameplay';
+            vm.levelComplete = false;
+
+            Gameplay.init();
+            vm.items = Gameplay.getItems();
+        }
 
         function maybeLevelComplete() {
             if (vm.items.length === 0) {
@@ -119,6 +124,7 @@
             }
         }
 
+        vm.startGame = startGame;
         vm.maybeLevelComplete = maybeLevelComplete;
     })
 
@@ -150,19 +156,27 @@
 
     app.factory("Gameplay", function () {
 
-        var items = [
+        var data = [
             {value:1},
-            {value:2}
+            {value:2},
+            {value:3},
+            {value:4}
         ]
 
-        var ID = 0;
-        items.forEach(function (x) {
-            x.id = ID++;
-        })
-
-        var curId = items[0].id;
+        var items = undefined;
+        var curId = undefined;
 
         return {
+            init: function () {
+                items = data.slice();
+
+                var ID = 0;
+                items.forEach(function (x) {
+                    x.id = ID++;
+                })
+
+                curId = items[0].id;
+            },
             getItems: function () {
                 return items;
             },
@@ -216,7 +230,9 @@
     app.animation(".anim-complete", function () {
         return {
             enter: function (el, done) {
-                TweenMax.from(el, 2, {y:"+=100", onComplete:done});
+                TweenMax.from(el, 0.5, {scale:0, ease:Back.easeOut});
+                TweenMax.from(el, 2.0, {y:"+=150", ease:Power0.easeNone});
+                TweenMax.to(el, 0.5, {delay:1.5, scale:0, ease:Back.easeIn, onComplete:done})
             }
         }
     })
