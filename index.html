@@ -3,75 +3,18 @@
 <head lang="en">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    <title>Plus One Angular</title>
+    <link rel="stylesheet" href="css/styles.css"/>
 
-    <style>
-
-        [ng-cloak] {
-            display: none;
-        }
-
-        .wrapper {
-            margin: 0 auto;
-            width: 320px;
-            height: 480px;
-        }
-        .window {
-            background-image: url("img/background.png");
-            width: 320px;
-            height: 480px;
-            overflow:hidden; /*избегаем выпадающих марджинов*/
-        }
-
-        .main-menu-title {
-            margin-top: 100px;
-        }
-
-        .gameplay-ui {
-            max-height: 80px;
-            background-color: #fefefe;
-        }
-
-        .bt {
-            display: inline-block;
-            width: 60px;
-            height: 60px;
-            /*border:1px solid red;*/
-            cursor: pointer;
-            margin: 10px 5px;
-        }
-
-        .gameplay-body {
-            position: relative;
-            /*background-color: rgba(0, 0, 0, 0.3);*/
-            height: 400px;
-        }
-
-        .circle-item {
-            display: inline-block;
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            color: #fff;
-            line-height: 60px;
-            font-size: 30px;
-            text-align: center;
-            border-radius:50%;
-            cursor: pointer;
-        }
-
-        .level-complete {
-            position: absolute;
-            left: 0;
-            top: 50px;
-        }
-
-    </style>
+    <title>Plus One game, built with Angular</title>
 
 </head>
 <body ng-app="app" ng-controller="MainController as main">
 
+<!--TODO: remove 300ms delay for mobile devices-->
+<!--TODO: Hermes font-->
 <div class="wrapper" ng-cloak>
+    <!--TODO: Main Menu-->
+    <!--TODO: add yellow lines-->
     <div ng-if="main.state=='MainMenu'" class="window">
         <img src="img/mainMenuTitle.png" alt="Plus One" class="main-menu-title"/>
         <button class="btn btn-primary" ng-click="main.startGame()">Play</button>
@@ -85,9 +28,11 @@
                 <h4>Время {{main.gameTime}}</h4>
             </div>
             <div ng-click="main.abortGame()" class="bt pull-right"><img src="img/exitButton.png" alt="Menu"/></div>
+            <!--TODO: working snd button-->
             <div class="bt pull-right"><img src="img/soundIconOn.png" alt="Sound"/></div>
         </div>
         <div class="gameplay-body">
+            <!--TODO: different game complete images-->
             <div ng-if="main.levelComplete" class="level-complete anim-complete"><img src="img/textAwesome.png" alt=""/></div>
 
             <div circle-item ng-repeat="item in main.items">{{item.value}}</div>
@@ -95,10 +40,13 @@
 
     </div>
 
+    <!--TODO: credits-->
     <div ng-if="main.state=='Credits'" class="window">
         <h3>Credits!</h3>
         <button class="btn btn-primary" ng-click="main.state='MainMenu'">Back</button>
     </div>
+
+    <!--TODO: game complete-->
 
 </div>
 
@@ -190,212 +138,12 @@
         vm.abortGame = abortGame;
     })
 
-    app.factory("RandomColor", function () {
-        var colors = ["#79C2ED","#F9C205","#E97619","#D92250","#6C6297","#419283","#88BF26"];
-        var tempColors = colors.slice();
-        return {
-            get: function () {
-                if (tempColors.length == 0) tempColors = colors.slice();
-                var index = Math.floor(Math.random() * tempColors.length);
-                return tempColors.splice(index, 1)[0];
-            }
-        }
-    })
-
-    app.factory("Grid", function (Gameplay) {
-        var totalWidth = 320;
-        var totalHeight = 400;
-        var itemWidth = 60;
-        var itemHeight = 60;
-        return {
-            getPos: function (id) {
-                var curLevel = Gameplay.getCurLevel();
-                var levelRows = curLevel.rows;
-                var levelCols = curLevel.cols;
-                var dx = totalWidth / levelCols;
-                var dy = totalHeight / levelRows;
-                var offsetX = (dx - itemWidth) / 2;
-                var offsetY = (dy - itemHeight) / 2;
-                var x = offsetX + (id % levelCols) * dx;
-                var y = offsetY + Math.floor(id / levelCols) * dy;
-                return {x: x, y:y};
-            }
-        }
-    })
-
-    app.factory("Gameplay", function ($http) {
-
-        var levels;
-        var items;
-        var curLevel = undefined;
-        var curCircleId = undefined;
-
-        function getItemById(id) {
-            for (var i = 0; i < items.length; i++) {
-                if (items[i].id === id) return items[i];
-            }
-            return null;
-        }
-
-        return {
-            load: function (callback) {
-                $http.get("data/data.json")
-                        .success(function (data) {
-                            var ID = 0;
-                            levels = data.levels;
-                            levels.forEach(function (level) {
-                                        level.id = ID++;
-                                    })
-                            //levels = levels.filter(function (level) { return level.id == levels.length - 1; });
-                            //console.log(levels);
-                            callback();
-                        })
-            },
-            levelStart: function (id) {
-                curLevel = levels[id];
-                var tempItems = [];
-                var total = curLevel.cols * curLevel.rows;
-                for (var i = 0; i < total; i++) {
-                    var value = curLevel.start + curLevel.increment * i;
-                    tempItems.push({id:i, value:value});
-                }
-                items = _.shuffle(tempItems);
-                curCircleId = 0;
-            },
-            getCurLevel: function () {
-                return curLevel;
-            },
-            isLevelExist: function (id) {
-                return levels[id] !== undefined;
-            },
-            getLevelItems: function () {
-                return items;
-            },
-            isCorrect: function (id) {
-                return id === curCircleId;
-            },
-            proceed: function () {
-                var item = getItemById(curCircleId);
-                var index = items.indexOf(item);
-                items.splice(index, 1);
-                curCircleId++;
-            }
-        }
-    })
-
-    app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout, Utils, Snd) {
-        return {
-            link: function (scope, el, attrs) {
-                //console.log(scope.$index, scope.item.id);
-                var pos = Grid.getPos(scope.$index);
-                var color = RandomColor.get();
-                el.addClass('circle-item circle-tweens');
-                el.css({
-                    left:pos.x + "px",
-                    top:pos.y + "px",
-                    "background-color":color
-                });
-
-                el.on('click', function (e) {
-                    //e.preventDefault(); // why it doesn't work?
-
-                    if (Gameplay.isCorrect(scope.item.id)) {
-                        el.off();
-                        Gameplay.proceed();
-                        scope.main.maybeLevelComplete();
-                        Snd.correct();
-                        scope.$apply();
-                    } else {
-                        Utils.wobble(el);
-                        Snd.wrong();
-                    }
-
-                })
-            }
-        }
-    })
-
-    app.animation(".circle-tweens", function () {
-        return {
-            enter: function (el, done) {
-                var scope = el.scope();
-                var delay = scope.$index / 10;
-                TweenMax.set(el, {scale:0});
-                TweenMax.to(el, 0.5, {scale:1, ease:Back.easeOut, delay:delay, onComplete:done});
-            },
-            leave: function (el, done) {
-                TweenMax.to(el, 0.5, {scale:0, onComplete:done});
-            }
-        }
-    })
-
-    app.animation(".anim-complete", function () {
-        return {
-            enter: function (el, done) {
-                TweenMax.from(el, 0.5, {scale:0, ease:Back.easeOut});
-                TweenMax.from(el, 2.0, {y:"+=150", ease:Power0.easeNone});
-                TweenMax.to(el, 0.5, {delay:1.5, scale:0, ease:Back.easeIn, onComplete:done})
-            }
-        }
-    })
-
-    app.factory("Utils", function () {
-        return {
-            wobble: function (el) {
-                var dt = 0.1;
-                TweenMax.to(el, dt, {x:"+=5", ease:Power1.easeOut});
-                TweenMax.to(el, dt * 2, {x:"-=10", delay:dt, ease:Power1.easeInOut});
-                TweenMax.to(el, dt * 2, {x:"+=10", delay:dt * 3, ease:Power1.easeInOut});
-                TweenMax.to(el, dt, {x:"-=5", delay:dt * 5, ease:Power1.easeIn});
-            }
-        }
-    })
-
-    app.factory("Snd", function () {
-
-        var sndEnabled = true;
-        var sndClick;
-        var sndCorrect;
-        var sndWrong;
-        var sndLevelComplete;
-
-        function play(snd) {
-            if (sndEnabled) {
-                snd.play();
-            }
-        }
-
-        return {
-            init: function () {
-                sndClick = new Howl({
-                    urls: ['snd/click.mp3']
-                });
-                sndCorrect = new Howl({
-                    urls: ['snd/right.mp3']
-                });
-                sndWrong = new Howl({
-                    urls: ['snd/wrong.mp3']
-                });
-                sndLevelComplete = new Howl({
-                    urls: ['snd/levelComplete.mp3']
-                });
-            },
-            click: function () {
-                play(sndClick);
-            },
-            correct: function () {
-                play(sndCorrect);
-            },
-            wrong: function () {
-                play(sndWrong);
-            },
-            levelComplete: function () {
-                play(sndLevelComplete);
-            }
-        }
-    })
 
 </script>
+
+<script src="js/services.js"></script>
+<script src="js/directives.js"></script>
+<script src="js/animations.js"></script>
 
 </body>
 </html>
