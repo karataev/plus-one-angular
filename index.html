@@ -79,9 +79,13 @@
     </div>
 
     <div ng-if="main.state=='Gameplay'" class="window">
-        <div class="gameplay-ui">
-            <div class="bt"><img src="img/soundIconOn.png" alt="Sound"/></div>
-            <div ng-click="main.state='MainMenu'" class="bt"><img src="img/exitButton.png" alt="Menu"/></div>
+        <div class="gameplay-ui clearfix">
+            <div class="pull-left">
+                <h4>Уровень {{main.curLevel.id + 1}}</h4>
+                <h4>Время {{main.gameTime}}</h4>
+            </div>
+            <div ng-click="main.abortGame()" class="bt pull-right"><img src="img/exitButton.png" alt="Menu"/></div>
+            <div class="bt pull-right"><img src="img/soundIconOn.png" alt="Sound"/></div>
         </div>
         <div class="gameplay-body">
             <div ng-if="main.levelComplete" class="level-complete anim-complete"><img src="img/textAwesome.png" alt=""/></div>
@@ -101,27 +105,39 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular-animate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
 
 <script>
     var app =angular.module("app", ["ngAnimate"]);
-    app.controller("MainController", function (Gameplay, $timeout) {
+    app.controller("MainController", function (Gameplay, $timeout, $interval) {
         var vm = this;
+        var tick;
+        var startTime;
 
         vm.state = 'MainMenu';
+        vm.gameTime = "00:00";
 
         function startGame() {
             vm.state = 'Gameplay';
             vm.levelComplete = false;
+            vm.curLevel = undefined;
 
             //Gameplay.init();
             Gameplay.load(function () {
                 //console.log("ready!");
                 levelStart(0);
+
+                startTime = moment();
+                tick = $interval(function () {
+                    var now = moment();
+                    vm.gameTime = moment(now.diff(startTime)).format('mm:ss');
+                }, 1000)
             });
         }
 
         function levelStart(id) {
             Gameplay.levelStart(id);
+            vm.curLevel = Gameplay.getCurLevel();
             vm.items = Gameplay.getLevelItems();
             vm.levelComplete = false;
         }
@@ -137,15 +153,34 @@
                         levelStart(nextLevelId);
                     }
                     else {
-                        console.log("Game Complete!");
+                        gameComplete();
                     }
                 }, 2000)
             }
         }
 
+        function gameComplete() {
+            stopTimer();
+            console.log("Game Complete!");
+        }
+
+        function stopTimer() {
+            $interval.cancel(tick);
+            tick = undefined;
+        }
+
+        function abortGame() {
+            vm.items = undefined;
+            vm.levelComplete = false;
+            stopTimer();
+
+            vm.state = "MainMenu";
+        }
+
         // exports
         vm.startGame = startGame;
         vm.maybeLevelComplete = maybeLevelComplete;
+        vm.abortGame = abortGame;
     })
 
     app.factory("RandomColor", function () {
