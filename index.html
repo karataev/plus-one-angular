@@ -107,10 +107,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/1.1.26/howler.min.js"></script>
 
 <script>
     var app =angular.module("app", ["ngAnimate"]);
-    app.controller("MainController", function (Gameplay, $timeout, $interval) {
+    app.controller("MainController", function (Gameplay, $timeout, $interval, Snd) {
         var vm = this;
         var tick;
         var startTime;
@@ -118,12 +119,15 @@
         vm.state = 'MainMenu';
         vm.gameTime = "00:00";
 
+        Snd.init();
+
         function startGame() {
             vm.state = 'Gameplay';
             vm.levelComplete = false;
             vm.curLevel = undefined;
 
-            //Gameplay.init();
+            Snd.click();
+
             Gameplay.load(function () {
                 //console.log("ready!");
                 levelStart(0);
@@ -147,6 +151,7 @@
             if (vm.items.length === 0) {
                 //console.log("Level Complete!");
                 vm.levelComplete = true;
+                Snd.levelComplete();
 
                 $timeout(function () {
                     var nextLevelId = Gameplay.getCurLevel().id + 1;
@@ -175,6 +180,7 @@
             vm.levelComplete = false;
             stopTimer();
 
+            Snd.click();
             vm.state = "MainMenu";
         }
 
@@ -277,7 +283,7 @@
         }
     })
 
-    app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout, Utils) {
+    app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout, Utils, Snd) {
         return {
             link: function (scope, el, attrs) {
                 //console.log(scope.$index, scope.item.id);
@@ -297,9 +303,11 @@
                         el.off();
                         Gameplay.proceed();
                         scope.main.maybeLevelComplete();
+                        Snd.correct();
                         scope.$apply();
                     } else {
                         Utils.wobble(el);
+                        Snd.wrong();
                     }
 
                 })
@@ -339,6 +347,50 @@
                 TweenMax.to(el, dt * 2, {x:"-=10", delay:dt, ease:Power1.easeInOut});
                 TweenMax.to(el, dt * 2, {x:"+=10", delay:dt * 3, ease:Power1.easeInOut});
                 TweenMax.to(el, dt, {x:"-=5", delay:dt * 5, ease:Power1.easeIn});
+            }
+        }
+    })
+
+    app.factory("Snd", function () {
+
+        var sndEnabled = true;
+        var sndClick;
+        var sndCorrect;
+        var sndWrong;
+        var sndLevelComplete;
+
+        function play(snd) {
+            if (sndEnabled) {
+                snd.play();
+            }
+        }
+
+        return {
+            init: function () {
+                sndClick = new Howl({
+                    urls: ['snd/click.mp3']
+                });
+                sndCorrect = new Howl({
+                    urls: ['snd/right.mp3']
+                });
+                sndWrong = new Howl({
+                    urls: ['snd/wrong.mp3']
+                });
+                sndLevelComplete = new Howl({
+                    urls: ['snd/levelComplete.mp3']
+                });
+            },
+            click: function () {
+                play(sndClick);
+            },
+            correct: function () {
+                play(sndCorrect);
+            },
+            wrong: function () {
+                play(sndWrong);
+            },
+            levelComplete: function () {
+                play(sndLevelComplete);
             }
         }
     })
