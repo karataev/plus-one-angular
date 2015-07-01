@@ -106,6 +106,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular-animate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 
 <script>
     var app =angular.module("app", ["ngAnimate"]);
@@ -144,7 +145,7 @@
 
         function maybeLevelComplete() {
             if (vm.items.length === 0) {
-                console.log("Level Complete!");
+                //console.log("Level Complete!");
                 vm.levelComplete = true;
 
                 $timeout(function () {
@@ -223,6 +224,13 @@
         var curLevel = undefined;
         var curCircleId = undefined;
 
+        function getItemById(id) {
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].id === id) return items[i];
+            }
+            return null;
+        }
+
         return {
             load: function (callback) {
                 $http.get("data/data.json")
@@ -239,14 +247,14 @@
             },
             levelStart: function (id) {
                 curLevel = levels[id];
-                items = [];
+                var tempItems = [];
                 var total = curLevel.cols * curLevel.rows;
                 for (var i = 0; i < total; i++) {
                     var value = curLevel.start + curLevel.increment * i;
-                    items.push({id:i, value:value});
+                    tempItems.push({id:i, value:value});
                 }
-
-                curCircleId = items[0].id;
+                items = _.shuffle(tempItems);
+                curCircleId = 0;
             },
             getCurLevel: function () {
                 return curLevel;
@@ -261,8 +269,10 @@
                 return id === curCircleId;
             },
             proceed: function () {
+                var item = getItemById(curCircleId);
+                var index = items.indexOf(item);
+                items.splice(index, 1);
                 curCircleId++;
-                items.splice(0, 1);
             }
         }
     })
@@ -270,7 +280,8 @@
     app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout) {
         return {
             link: function (scope, el, attrs) {
-                var pos = Grid.getPos(scope.item.id);
+                //console.log(scope.$index, scope.item.id);
+                var pos = Grid.getPos(scope.$index);
                 var color = RandomColor.get();
                 el.addClass('circle-item circle-tweens');
                 el.css({
@@ -300,7 +311,7 @@
         return {
             enter: function (el, done) {
                 var scope = el.scope();
-                var delay = scope.item.id / 10;
+                var delay = scope.$index / 10;
                 TweenMax.set(el, {scale:0});
                 TweenMax.to(el, 0.5, {scale:1, ease:Back.easeOut, delay:delay, onComplete:done});
             },
