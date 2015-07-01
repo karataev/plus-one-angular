@@ -277,7 +277,7 @@
         }
     })
 
-    app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout) {
+    app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout, Utils) {
         return {
             link: function (scope, el, attrs) {
                 //console.log(scope.$index, scope.item.id);
@@ -299,7 +299,7 @@
                         scope.main.maybeLevelComplete();
                         scope.$apply();
                     } else {
-                        console.log("wrong!");
+                        Utils.wobble(el);
                     }
 
                 })
@@ -327,6 +327,18 @@
                 TweenMax.from(el, 0.5, {scale:0, ease:Back.easeOut});
                 TweenMax.from(el, 2.0, {y:"+=150", ease:Power0.easeNone});
                 TweenMax.to(el, 0.5, {delay:1.5, scale:0, ease:Back.easeIn, onComplete:done})
+            }
+        }
+    })
+
+    app.factory("Utils", function () {
+        return {
+            wobble: function (el) {
+                var dt = 0.1;
+                TweenMax.to(el, dt, {x:"+=5", ease:Power1.easeOut});
+                TweenMax.to(el, dt * 2, {x:"-=10", delay:dt, ease:Power1.easeInOut});
+                TweenMax.to(el, dt * 2, {x:"+=10", delay:dt * 3, ease:Power1.easeInOut});
+                TweenMax.to(el, dt, {x:"-=5", delay:dt * 5, ease:Power1.easeIn});
             }
         }
     })
