@@ -54,7 +54,7 @@
             height: 60px;
             color: #fff;
             line-height: 60px;
-            font-size: 40px;
+            font-size: 30px;
             text-align: center;
             border-radius:50%;
             cursor: pointer;
@@ -113,8 +113,13 @@
             vm.state = 'Gameplay';
             vm.levelComplete = false;
 
-            Gameplay.init();
-            vm.items = Gameplay.getItems();
+            //Gameplay.init();
+            //vm.items = Gameplay.getItems();
+            Gameplay.load(function () {
+                //console.log("ready!");
+                Gameplay.levelStart(1);
+                vm.items = Gameplay.getLevelItems();
+            });
         }
 
         function maybeLevelComplete() {
@@ -154,37 +159,41 @@
         }
     })
 
-    app.factory("Gameplay", function () {
+    app.factory("Gameplay", function ($http) {
 
-        var data = [
-            {value:1},
-            {value:2},
-            {value:3},
-            {value:4}
-        ]
-
-        var items = undefined;
-        var curId = undefined;
+        var levels;
+        var items;
+        var curLevel = undefined;
+        var curCircleId = undefined;
 
         return {
-            init: function () {
-                items = data.slice();
-
-                var ID = 0;
-                items.forEach(function (x) {
-                    x.id = ID++;
-                })
-
-                curId = items[0].id;
+            load: function (callback) {
+                $http.get("data/data.json")
+                        .success(function (data) {
+                            levels = data.levels;
+                            //console.log(levels);
+                            // ready
+                            callback();
+                        })
             },
-            getItems: function () {
+            levelStart: function (id) {
+                curLevel = levels[id];
+                items = [];
+                for (var i = 0; i < curLevel.amount;i++) {
+                    var value = curLevel.start + curLevel.increment * i;
+                    items.push({id:i, value:value});
+                }
+
+                curCircleId = items[0].id;
+            },
+            getLevelItems: function () {
                 return items;
             },
             isCorrect: function (id) {
-                return id === curId;
+                return id === curCircleId;
             },
             proceed: function () {
-                curId++;
+                curCircleId++;
                 items.splice(0, 1);
             }
         }
