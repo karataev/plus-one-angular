@@ -37,8 +37,22 @@
         }
 
         .gameplay-body {
-            background-color: rgba(0, 0, 0, 0.3);
+            position: relative;
+            /*background-color: rgba(0, 0, 0, 0.3);*/
             height: 400px;
+        }
+
+        .circle-item {
+            display: inline-block;
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            color: #fff;
+            line-height: 60px;
+            font-size: 40px;
+            text-align: center;
+            border-radius:50%;
+            cursor: pointer;
         }
 
     </style>
@@ -59,7 +73,7 @@
             <div ng-click="main.state='MainMenu'" class="bt"><img src="img/exitButton.png" alt="Menu"/></div>
         </div>
         <div class="gameplay-body">
-
+            <div circle-item ng-repeat="item in main.items">{{item.value}}</div>
         </div>
 
     </div>
@@ -72,16 +86,94 @@
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular-animate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js"></script>
 
 <script>
-    var app =angular.module("app", [])
+    var app =angular.module("app", ["ngAnimate"]);
     app.controller("MainController", function () {
         var vm = this;
 
         vm.state = 'Gameplay';
 
+        vm.items = [
+            {value:1},
+            {value:2},
+            {value:3},
+            {value:4},
+            {value:5},
+            {value:6}
+        ]
 
+        var ID = 0;
+        vm.items.forEach(function (x) {
+            x.id = ID++;
+        })
+
+        function removeItem(item) {
+            var index = vm.items.indexOf(item);
+            vm.items.splice(index, 1);
+        }
+
+        vm.removeItem = removeItem;
     })
+
+    app.factory("RandomColor", function () {
+        var colors = ["#79C2ED","#F9C205","#E97619","#D92250","#6C6297","#419283","#88BF26"];
+        var tempColors = colors.slice();
+        return {
+            get: function () {
+                if (tempColors.length == 0) tempColors = colors.slice();
+                var index = Math.floor(Math.random() * tempColors.length);
+                return tempColors.splice(index, 1)[0];
+            }
+        }
+    })
+
+    app.factory("Grid", function () {
+        var cols = 4;
+        var space = 10;
+        return {
+            getPos: function (id) {
+                var itemWidth = 60;
+                var itemHeight = 60;
+                var x = (id % cols) * (itemWidth + space);
+                var y = Math.floor(id / cols) * (itemHeight + space);
+                return {x: x, y:y};
+            }
+        }
+    })
+
+    app.directive("circleItem", function (RandomColor, Grid) {
+        return {
+            link: function (scope, el, attrs) {
+                var pos = Grid.getPos(scope.item.id);
+                var color = RandomColor.get();
+                el.addClass('circle-item circle-tweens');
+                el.css({
+                    left:pos.x + "px",
+                    top:pos.y + "px",
+                    "background-color":color
+                });
+
+                el.on('click', function (e) {
+                    //e.preventDefault(); // why it doesn't work?
+                    el.off();
+                    scope.main.removeItem(scope.item);
+                    scope.$apply();
+                })
+            }
+        }
+    })
+
+    app.animation(".circle-tweens", function () {
+        return {
+            leave: function (el, done) {
+                TweenMax.to(el, 0.5, {scale:0, onComplete:done});
+            }
+        }
+    })
+
 </script>
 
 </body>
