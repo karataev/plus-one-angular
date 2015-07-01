@@ -21,6 +21,26 @@
         .main-menu-title {
             margin-top: 100px;
         }
+
+        .gameplay-ui {
+            max-height: 80px;
+            background-color: #eee;
+        }
+
+        .bt {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            /*border:1px solid red;*/
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+
+        .gameplay-body {
+            background-color: rgba(0, 0, 0, 0.3);
+            height: 400px;
+        }
+
     </style>
 
 </head>
@@ -34,8 +54,14 @@
     </div>
 
     <div ng-if="main.state=='Gameplay'" class="window">
-        <h3>Gameplay</h3>
-        <button class="btn btn-primary" ng-click="main.state='MainMenu'">Back</button>
+        <div class="gameplay-ui">
+            <div class="bt"><img src="img/soundIconOn.png" alt="Sound"/></div>
+            <div ng-click="main.state='MainMenu'" class="bt"><img src="img/exitButton.png" alt="Menu"/></div>
+        </div>
+        <div class="gameplay-body">
+
+        </div>
+
     </div>
 
     <div ng-if="main.state=='Credits'" class="window">
@@ -52,7 +78,7 @@
     app.controller("MainController", function () {
         var vm = this;
 
-        vm.state = 'MainMenu';
+        vm.state = 'Gameplay';
 
 
     })
