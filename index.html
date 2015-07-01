@@ -185,13 +185,13 @@
             load: function (callback) {
                 $http.get("data/data.json")
                         .success(function (data) {
-                            levels = data.levels;
                             var ID = 0;
+                            levels = data.levels;
                             levels.forEach(function (level) {
-                                level.id = ID++;
-                            })
+                                        level.id = ID++;
+                                    })
+                            //levels = levels.filter(function (level) { return level.id < 1; });
                             //console.log(levels);
-                            // ready
                             callback();
                         })
             },
@@ -224,7 +224,7 @@
         }
     })
 
-    app.directive("circleItem", function (RandomColor, Grid, Gameplay) {
+    app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout) {
         return {
             link: function (scope, el, attrs) {
                 var pos = Grid.getPos(scope.item.id);
@@ -255,6 +255,12 @@
 
     app.animation(".circle-tweens", function () {
         return {
+            enter: function (el, done) {
+                var scope = el.scope();
+                var delay = scope.item.id / 10;
+                TweenMax.set(el, {scale:0});
+                TweenMax.to(el, 0.5, {scale:1, ease:Back.easeOut, delay:delay, onComplete:done});
+            },
             leave: function (el, done) {
                 TweenMax.to(el, 0.5, {scale:0, onComplete:done});
             }
