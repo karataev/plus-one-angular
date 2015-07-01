@@ -160,15 +160,22 @@
         }
     })
 
-    app.factory("Grid", function () {
-        var cols = 4;
-        var space = 10;
+    app.factory("Grid", function (Gameplay) {
+        var totalWidth = 320;
+        var totalHeight = 400;
+        var itemWidth = 60;
+        var itemHeight = 60;
         return {
             getPos: function (id) {
-                var itemWidth = 60;
-                var itemHeight = 60;
-                var x = (id % cols) * (itemWidth + space);
-                var y = Math.floor(id / cols) * (itemHeight + space);
+                var curLevel = Gameplay.getCurLevel();
+                var levelRows = curLevel.rows;
+                var levelCols = curLevel.cols;
+                var dx = totalWidth / levelCols;
+                var dy = totalHeight / levelRows;
+                var offsetX = (dx - itemWidth) / 2;
+                var offsetY = (dy - itemHeight) / 2;
+                var x = offsetX + (id % levelCols) * dx;
+                var y = offsetY + Math.floor(id / levelCols) * dy;
                 return {x: x, y:y};
             }
         }
@@ -198,7 +205,8 @@
             levelStart: function (id) {
                 curLevel = levels[id];
                 items = [];
-                for (var i = 0; i < curLevel.amount;i++) {
+                var total = curLevel.cols * curLevel.rows;
+                for (var i = 0; i < total; i++) {
                     var value = curLevel.start + curLevel.increment * i;
                     items.push({id:i, value:value});
                 }

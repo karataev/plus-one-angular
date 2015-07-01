@@ -3,12 +3,14 @@
     {
       "start":1,
       "increment":1,
-      "amount":4
+      "cols":4,
+      "rows":1
     },
     {
       "start":10,
       "increment":10,
-      "amount":3
+      "cols":1,
+      "rows":4
     }
   ]
 }
