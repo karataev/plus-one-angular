@@ -6,6 +6,11 @@
     <title>Plus One Angular</title>
 
     <style>
+
+        [ng-cloak] {
+            display: none;
+        }
+
         .wrapper {
             margin: 0 auto;
             width: 320px;
@@ -55,12 +60,18 @@
             cursor: pointer;
         }
 
+        .level-complete {
+            position: absolute;
+            left: 0;
+            top: 100px;
+        }
+
     </style>
 
 </head>
 <body ng-app="app" ng-controller="MainController as main">
 
-<div class="wrapper">
+<div class="wrapper" ng-cloak>
     <div ng-if="main.state=='MainMenu'" class="window">
         <img src="img/mainMenuTitle.png" alt="Plus One" class="main-menu-title"/>
         <button class="btn btn-primary" ng-click="main.state='Gameplay'">Play</button>
@@ -73,6 +84,8 @@
             <div ng-click="main.state='MainMenu'" class="bt"><img src="img/exitButton.png" alt="Menu"/></div>
         </div>
         <div class="gameplay-body">
+            <div ng-if="main.levelComplete" class="level-complete anim-complete"><img src="img/textAwesome.png" alt=""/></div>
+
             <div circle-item ng-repeat="item in main.items">{{item.value}}</div>
         </div>
 
@@ -91,31 +104,22 @@
 
 <script>
     var app =angular.module("app", ["ngAnimate"]);
-    app.controller("MainController", function () {
+    app.controller("MainController", function (Gameplay) {
         var vm = this;
 
         vm.state = 'Gameplay';
+        vm.levelComplete = false;
 
-        vm.items = [
-            {value:1},
-            {value:2},
-            {value:3},
-            {value:4},
-            {value:5},
-            {value:6}
-        ]
+        vm.items = Gameplay.getItems();
 
-        var ID = 0;
-        vm.items.forEach(function (x) {
-            x.id = ID++;
-        })
-
-        function removeItem(item) {
-            var index = vm.items.indexOf(item);
-            vm.items.splice(index, 1);
+        function maybeLevelComplete() {
+            if (vm.items.length === 0) {
+                console.log("Level Complete!");
+                vm.levelComplete = true;
+            }
         }
 
-        vm.removeItem = removeItem;
+        vm.maybeLevelComplete = maybeLevelComplete;
     })
 
     app.factory("RandomColor", function () {
@@ -144,7 +148,35 @@
         }
     })
 
-    app.directive("circleItem", function (RandomColor, Grid) {
+    app.factory("Gameplay", function () {
+
+        var items = [
+            {value:1},
+            {value:2}
+        ]
+
+        var ID = 0;
+        items.forEach(function (x) {
+            x.id = ID++;
+        })
+
+        var curId = items[0].id;
+
+        return {
+            getItems: function () {
+                return items;
+            },
+            isCorrect: function (id) {
+                return id === curId;
+            },
+            proceed: function () {
+                curId++;
+                items.splice(0, 1);
+            }
+        }
+    })
+
+    app.directive("circleItem", function (RandomColor, Grid, Gameplay) {
         return {
             link: function (scope, el, attrs) {
                 var pos = Grid.getPos(scope.item.id);
@@ -158,9 +190,16 @@
 
                 el.on('click', function (e) {
                     //e.preventDefault(); // why it doesn't work?
-                    el.off();
-                    scope.main.removeItem(scope.item);
-                    scope.$apply();
+
+                    if (Gameplay.isCorrect(scope.item.id)) {
+                        el.off();
+                        Gameplay.proceed();
+                        scope.main.maybeLevelComplete();
+                        scope.$apply();
+                    } else {
+                        console.log("wrong!");
+                    }
+
                 })
             }
         }
@@ -170,6 +209,14 @@
         return {
             leave: function (el, done) {
                 TweenMax.to(el, 0.5, {scale:0, onComplete:done});
+            }
+        }
+    })
+
+    app.animation(".anim-complete", function () {
+        return {
+            enter: function (el, done) {
+                TweenMax.from(el, 2, {y:"+=100", onComplete:done});
             }
         }
     })
