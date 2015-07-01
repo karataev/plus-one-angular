@@ -4,13 +4,59 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <title>Plus One Angular</title>
-</head>
-<body>
 
-<div class="container">
-    <h1>Hello!</h1>
+    <style>
+        .wrapper {
+            margin: 0 auto;
+            width: 320px;
+            height: 480px;
+        }
+        .window {
+            background-image: url("img/background.png");
+            width: 320px;
+            height: 480px;
+            overflow:auto; /*избегаем выпадающих марджинов*/
+        }
+
+        .main-menu-title {
+            margin-top: 100px;
+        }
+    </style>
+
+</head>
+<body ng-app="app" ng-controller="MainController as main">
+
+<div class="wrapper">
+    <div ng-if="main.state=='MainMenu'" class="window">
+        <img src="img/mainMenuTitle.png" alt="Plus One" class="main-menu-title"/>
+        <button class="btn btn-primary" ng-click="main.state='Gameplay'">Play</button>
+        <button class="btn btn-warning" ng-click="main.state='Credits'">Credits</button>
+    </div>
+
+    <div ng-if="main.state=='Gameplay'" class="window">
+        <h3>Gameplay</h3>
+        <button class="btn btn-primary" ng-click="main.state='MainMenu'">Back</button>
+    </div>
+
+    <div ng-if="main.state=='Credits'" class="window">
+        <h3>Credits!</h3>
+        <button class="btn btn-primary" ng-click="main.state='MainMenu'">Back</button>
+    </div>
+
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
+
+<script>
+    var app =angular.module("app", [])
+    app.controller("MainController", function () {
+        var vm = this;
+
+        vm.state = 'MainMenu';
+
+
+    })
+</script>
 
 </body>
 </html>
