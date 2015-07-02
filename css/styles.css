@@ -2,6 +2,11 @@
     display: none;
 }
 
+@font-face {
+    font-family: Hermes; /* Гарнитура шрифта */
+    src: url(hermes.ttf); /* Путь к файлу со шрифтом */
+}
+
 .wrapper {
     margin: 0 auto;
     width: 320px;
@@ -12,6 +17,7 @@
     width: 320px;
     height: 480px;
     overflow:hidden; /*избегаем выпадающих марджинов*/
+    /*font-family: Hermes, Arial, sans-serif;*/
 }
 
 .img-yellow-line1 {
