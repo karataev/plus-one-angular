@@ -41,7 +41,6 @@ app.directive("sndIcon", function (Snd) {
     },
     link: function (scope, el, attrs) {
       el.on("click", function () {
-        console.log("click!", Snd.isEnabled());
         Snd.toggle();
         scope.$apply();
       })

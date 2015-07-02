@@ -10,7 +10,6 @@ app.animation(".circle-tweens", function () {
       TweenMax.set(el, {scale:0});
       TweenMax.to(el, 0.5, {scale:1, ease:Back.easeOut, delay:delay, onComplete:done});
     },
-    //TODO dissapear with alpha, like in original game
     leave: function (el, done) {
       TweenMax.to(el, 0.5, {scale:0, onComplete:done});
     }
@@ -22,7 +21,7 @@ app.animation(".anim-complete", function () {
     enter: function (el, done) {
       TweenMax.from(el, 0.5, {scale:0, ease:Back.easeOut});
       TweenMax.from(el, 2.0, {y:"+=150", ease:Power0.easeNone});
-      TweenMax.to(el, 0.5, {delay:1.5, scale:0, ease:Back.easeIn, onComplete:done})
+      TweenMax.to(el, 0.5, {delay:1.5, opacity:0, ease:Power0.easeNone, onComplete:done})
     }
   }
 })
