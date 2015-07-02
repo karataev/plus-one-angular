@@ -10,7 +10,6 @@
 </head>
 <body ng-app="app" ng-controller="MainController as main">
 
-<!--TODO: remove 300ms delay for mobile devices-->
 <div class="wrapper" ng-cloak>
     <div ng-if="main.getState()=='MainMenu'" class="window">
         <img class="img-yellow-line1" src="img/yellowLine.png" alt=""/>
@@ -22,6 +21,9 @@
             <snd-icon></snd-icon>
         </div>
 
+        <div class="build-version">
+            v0.9
+        </div>
     </div>
 
     <div ng-if="main.getState()=='Gameplay'" class="window">
@@ -85,6 +87,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/1.1.26/howler.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
 
 <script>
     var app =angular.module("app", ["ngAnimate"]);
@@ -95,6 +98,7 @@
 
         vm.gameTime = "00:00";
 
+        FastClick.attach(document.body);
         Snd.init();
 
         function startGame() {
@@ -180,7 +184,6 @@
         var vm = this;
 
         function gotoMenu() {
-            // TODO: ugly hack. one controller should not ask another controller for this stuff. Should refactor to a service!
             Game.setState("MainMenu");
         }
 
