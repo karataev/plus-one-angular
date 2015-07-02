@@ -111,14 +111,14 @@ app.factory("Utils", function () {
 
 app.factory("Snd", function () {
 
-  var sndEnabled = true;
+  var enabled = true;
   var sndClick;
   var sndCorrect;
   var sndWrong;
   var sndLevelComplete;
 
   function play(snd) {
-    if (sndEnabled) {
+    if (enabled) {
       snd.play();
     }
   }
@@ -149,6 +149,12 @@ app.factory("Snd", function () {
     },
     levelComplete: function () {
       play(sndLevelComplete);
+    },
+    isEnabled: function () {
+      return enabled;
+    },
+    toggle: function () {
+      enabled = !enabled;
     }
   }
 })

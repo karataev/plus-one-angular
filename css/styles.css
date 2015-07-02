@@ -20,6 +20,8 @@
     /*font-family: Hermes, Arial, sans-serif;*/
 }
 
+ /************** MAIN MENU *********************** */
+
 .img-yellow-line1 {
     margin-top: 50px;
 }
@@ -32,9 +34,47 @@
     /*margin-top: 100px;*/
 }
 
+.bt-start-game {
+    display: block;
+    width: 200px;
+    /*padding: 5px;*/
+    border:0;
+    color: #ffffff;
+    background-color: #79c2ed;
+    font-size: 50px;
+    margin: 0 auto;
+    text-transform: uppercase;
+    margin-top: 20px;
+}
+
+.bt-credits {
+    display: block;
+    width: 200px;
+    border:0;
+    color: #ffffff;
+    background-color: #88BF26;
+    font-size: 30px;
+    margin: 0 auto;
+    text-transform: uppercase;
+    margin-top: 20px;
+}
+
+.menu-snd-holder {
+    display: block;
+    width: 60px;
+    margin: 20px auto;
+
+}
+
+/************************ GAMEPLAY *********************** */
+
 .gameplay-ui {
     max-height: 80px;
     background-color: #fefefe;
+}
+
+.gameplay-bt-holder {
+    margin: 10px 5px;
 }
 
 .bt {
@@ -43,7 +83,6 @@
     height: 60px;
     /*border:1px solid red;*/
     cursor: pointer;
-    margin: 10px 5px;
 }
 
 .gameplay-body {

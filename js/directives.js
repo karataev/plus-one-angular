@@ -34,3 +34,22 @@ app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout, Uti
   }
 })
 
+app.directive("sndIcon", function (Snd) {
+  return {
+    controller: function ($scope) {
+      $scope.isEnabled = Snd.isEnabled;
+    },
+    link: function (scope, el, attrs) {
+      el.on("click", function () {
+        console.log("click!", Snd.isEnabled());
+        Snd.toggle();
+        scope.$apply();
+      })
+    },
+    replace:true,
+    template:'<div class="bt">' +
+    '<img ng-if="isEnabled()" src="img/soundIconOn.png" alt=""/>' +
+    '<img ng-if="!isEnabled()" src="img/soundIconOff.png" alt=""/>' +
+    '</div>'
+  }
+})

@@ -17,8 +17,12 @@
         <img class="img-yellow-line1" src="img/yellowLine.png" alt=""/>
         <img src="img/mainMenuTitle.png" alt="Plus One" class="main-menu-title"/>
         <img class="img-yellow-line2" src="img/yellowLine.png" alt=""/>
-        <button class="btn btn-primary" ng-click="main.startGame()">Play</button>
-        <button class="btn btn-warning" ng-click="main.state='Credits'">Credits</button>
+        <button class="bt-start-game" ng-click="main.startGame()">Play</button>
+        <button class="bt-credits" ng-click="main.state='Credits'">Credits</button>
+        <div class="menu-snd-holder">
+            <snd-icon></snd-icon>
+        </div>
+
     </div>
 
     <div ng-if="main.state=='Gameplay'" class="window">
@@ -27,9 +31,11 @@
                 <h4>Уровень {{main.curLevel.id + 1}}</h4>
                 <h4>Время {{main.gameTime}}</h4>
             </div>
-            <div ng-click="main.abortGame()" class="bt pull-right"><img src="img/exitButton.png" alt="Menu"/></div>
-            <!--TODO: working snd button-->
-            <div class="bt pull-right"><img src="img/soundIconOn.png" alt="Sound"/></div>
+            <div class="gameplay-bt-holder pull-right">
+                <div ng-click="main.abortGame()" class="bt"><img src="img/exitButton.png" alt="Menu"/></div>
+            </div>
+
+            <div class="gameplay-bt-holder pull-right"><snd-icon></snd-icon></div>
         </div>
         <div class="gameplay-body">
             <!--TODO: different game complete images-->
