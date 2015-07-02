@@ -2,7 +2,6 @@
  * Created by postepenno on 01.07.2015.
  */
 
-// TODO: prevent default behaviour when clicking on a circle
 app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout, Utils, Snd) {
   return {
     link: function (scope, el, attrs) {
@@ -16,8 +15,8 @@ app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout, Uti
         "background-color":color
       });
 
-      el.on('click', function (e) {
-        //e.preventDefault(); // why it doesn't work?
+      el.on('mousedown', function (e) {
+        e.preventDefault();
 
         if (Gameplay.isCorrect(scope.item.id)) {
           el.off();
