@@ -67,7 +67,15 @@
         <button class="bt-rect bt-credits-back" ng-click="main.state='MainMenu'">Back</button>
     </div>
 
-    <!--TODO: game complete-->
+    <div ng-if="main.state=='GameComplete'" class="window game-complete" ng-controller="GameCompleteController as compl">
+        <h1>Game Complete!</h1>
+        <h2>Congratulations!</h2>
+        <a href="http://postepenno.com" target="_blank">
+            <h3>More Games</h3>
+        </a>
+        <button class="bt-rect" ng-click="compl.gotoMenu()">Menu</button>
+
+    </div>
 
 </div>
 
@@ -136,7 +144,7 @@
 
         function gameComplete() {
             stopTimer();
-            console.log("Game Complete!");
+            vm.state = 'GameComplete';
         }
 
         function stopTimer() {
@@ -170,6 +178,18 @@
         var images = ["textAwesome.png", "textCool.png", "textDoingGreat.png", "textGreat.png", "textPerfect.png", "textWellDone.png", "textYouRock.png"];
         var index = Math.floor(Math.random() * images.length);
         vm.img = "img/" + images[index];
+    })
+
+    app.controller("GameCompleteController", function ($scope) {
+        var vm = this;
+
+        function gotoMenu() {
+            // TODO: ugly hack. one controller should not ask another controller for this stuff. Should refactor to a service!
+            $scope.main.state = 'MainMenu';
+        }
+
+        //exports
+        vm.gotoMenu = gotoMenu;
     })
 
 </script>

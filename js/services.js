@@ -73,6 +73,7 @@ app.factory("Gameplay", function ($http) {
             level.id = ID++;
           })
           //levels = levels.filter(function (level) { return level.id == levels.length - 1; });
+          levels = levels.filter(function (level) { return level.id == 0; });
           //console.log(levels);
           callback();
         })

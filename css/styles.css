@@ -39,7 +39,7 @@
     width: 200px;
     border:0;
     color: #ffffff;
-    background-color: #666;
+    background-color: #88BF26;
     font-size: 30px;
     margin: 0 auto;
     text-transform: uppercase;
@@ -124,4 +124,9 @@
     position: absolute;
     left: 0;
     top: 50px;
+}
+
+/******************** GAME COMPLETE ***************************/
+.game-complete {
+    text-align: center;
 }
