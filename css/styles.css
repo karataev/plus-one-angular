@@ -62,6 +62,13 @@
 
 }
 
+.build-version {
+    position: absolute;
+    top: 0;
+    font-size: 12px;
+    color: #666;
+}
+
 /************************** CREDITS ****************************/
 
 .bt-credits-back {
