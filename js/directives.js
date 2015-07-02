@@ -2,6 +2,7 @@
  * Created by postepenno on 01.07.2015.
  */
 
+// TODO: prevent default behaviour when clicking on a circle
 app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout, Utils, Snd) {
   return {
     link: function (scope, el, attrs) {

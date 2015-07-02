@@ -97,6 +97,16 @@
     height: 400px;
 }
 
+.tutorial {
+    position: absolute;
+    background-color: #bcc8d6;
+    width: 250px;
+    padding: 10px;
+    margin-left: 35px;
+    margin-top: 20px;
+    text-align: center;
+}
+
 .circle-item {
     display: inline-block;
     position: absolute;

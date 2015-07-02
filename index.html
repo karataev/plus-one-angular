@@ -25,7 +25,6 @@
     </div>
 
     <div ng-if="main.state=='Gameplay'" class="window">
-        <!--TODO: tutorial-->
         <div class="gameplay-ui clearfix">
             <div class="gameplay-text-holder pull-left">
                 <h4>Уровень {{main.curLevel.id + 1}}</h4>
@@ -38,8 +37,15 @@
             <div class="gameplay-bt-holder pull-right"><snd-icon></snd-icon></div>
         </div>
         <div class="gameplay-body">
-            <!--TODO: different game complete images-->
-            <div ng-if="main.levelComplete" class="level-complete anim-complete"><img src="img/textAwesome.png" alt=""/></div>
+            <div class="tutorial" ng-if="main.curLevel.id == 0">
+                <h3>Get rid of all circles!</h3>
+                <h3>Start with 1</h3>
+            </div>
+            <div ng-controller="VictoryImageController as vic"
+                 ng-if="main.levelComplete"
+                 class="level-complete anim-complete">
+                <img ng-src="{{vic.img}}" alt=""/>
+            </div>
 
             <div circle-item ng-repeat="item in main.items">{{item.value}}</div>
         </div>
@@ -151,8 +157,20 @@
         vm.startGame = startGame;
         vm.maybeLevelComplete = maybeLevelComplete;
         vm.abortGame = abortGame;
+
+        vm.get = function () {
+            console.log("Get?");
+            return "img/textAwesome.png";
+        }
     })
 
+    app.controller("VictoryImageController", function () {
+        var vm = this;
+
+        var images = ["textAwesome.png", "textCool.png", "textDoingGreat.png", "textGreat.png", "textPerfect.png", "textWellDone.png", "textYouRock.png"];
+        var index = Math.floor(Math.random() * images.length);
+        vm.img = "img/" + images[index];
+    })
 
 </script>
 
