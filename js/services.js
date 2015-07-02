@@ -2,6 +2,19 @@
  * Created by postepenno on 01.07.2015.
  */
 
+app.factory("Game", function () {
+
+  var state = 'MainMenu';
+  return {
+    getState: function () {
+      return state;
+    },
+    setState: function (newState) {
+      state = newState;
+    }
+  }
+})
+
 app.factory("RandomColor", function () {
   var colors = ["#79C2ED","#F9C205","#E97619","#D92250","#6C6297","#419283","#88BF26"];
   var tempColors = colors.slice();
@@ -73,7 +86,7 @@ app.factory("Gameplay", function ($http) {
             level.id = ID++;
           })
           //levels = levels.filter(function (level) { return level.id == levels.length - 1; });
-          levels = levels.filter(function (level) { return level.id == 0; });
+          //levels = levels.filter(function (level) { return level.id == 0; });
           //console.log(levels);
           callback();
         })

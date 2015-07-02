@@ -12,19 +12,19 @@
 
 <!--TODO: remove 300ms delay for mobile devices-->
 <div class="wrapper" ng-cloak>
-    <div ng-if="main.state=='MainMenu'" class="window">
+    <div ng-if="main.getState()=='MainMenu'" class="window">
         <img class="img-yellow-line1" src="img/yellowLine.png" alt=""/>
         <img src="img/mainMenuTitle.png" alt="Plus One" class="main-menu-title"/>
         <img class="img-yellow-line2" src="img/yellowLine.png" alt=""/>
         <button class="bt-rect bt-start-game" ng-click="main.startGame()">Play</button>
-        <button class="bt-rect bt-credits" ng-click="main.state='Credits'">Credits</button>
+        <button class="bt-rect bt-credits" ng-click="main.setState('Credits')">Credits</button>
         <div class="menu-snd-holder">
             <snd-icon></snd-icon>
         </div>
 
     </div>
 
-    <div ng-if="main.state=='Gameplay'" class="window">
+    <div ng-if="main.getState()=='Gameplay'" class="window">
         <div class="gameplay-ui clearfix">
             <div class="gameplay-text-holder pull-left">
                 <h4>Уровень {{main.curLevel.id + 1}}</h4>
@@ -52,7 +52,7 @@
 
     </div>
 
-    <div ng-if="main.state=='Credits'" class="window">
+    <div ng-if="main.getState()=='Credits'" class="window">
         <br/>
         <a href="http://postepenno.com" target="_blank">
             <img src="img/postepennoLogo.png" alt=""/>
@@ -64,10 +64,10 @@
         </a>
         <br/><br/>
         <img src="img/musicCredits.png" alt=""/>
-        <button class="bt-rect bt-credits-back" ng-click="main.state='MainMenu'">Back</button>
+        <button class="bt-rect bt-credits-back" ng-click="main.setState('MainMenu')">Back</button>
     </div>
 
-    <div ng-if="main.state=='GameComplete'" class="window game-complete" ng-controller="GameCompleteController as compl">
+    <div ng-if="main.getState()=='GameComplete'" class="window game-complete" ng-controller="GameCompleteController as compl">
         <h1>Game Complete!</h1>
         <h2>Congratulations!</h2>
         <a href="http://postepenno.com" target="_blank">
@@ -88,18 +88,17 @@
 
 <script>
     var app =angular.module("app", ["ngAnimate"]);
-    app.controller("MainController", function (Gameplay, $timeout, $interval, Snd) {
+    app.controller("MainController", function (Gameplay, $timeout, $interval, Snd, Game) {
         var vm = this;
         var tick;
         var startTime;
 
-        vm.state = 'MainMenu';
         vm.gameTime = "00:00";
 
         Snd.init();
 
         function startGame() {
-            vm.state = 'Gameplay';
+            Game.setState('Gameplay');
             vm.levelComplete = false;
             vm.curLevel = undefined;
 
@@ -144,7 +143,7 @@
 
         function gameComplete() {
             stopTimer();
-            vm.state = 'GameComplete';
+            Game.setState('GameComplete');
         }
 
         function stopTimer() {
@@ -158,18 +157,15 @@
             stopTimer();
 
             Snd.click();
-            vm.state = "MainMenu";
+            Game.setState("MainMenu");
         }
 
         // exports
         vm.startGame = startGame;
         vm.maybeLevelComplete = maybeLevelComplete;
         vm.abortGame = abortGame;
-
-        vm.get = function () {
-            console.log("Get?");
-            return "img/textAwesome.png";
-        }
+        vm.getState = Game.getState;
+        vm.setState = Game.setState;
     })
 
     app.controller("VictoryImageController", function () {
@@ -180,12 +176,12 @@
         vm.img = "img/" + images[index];
     })
 
-    app.controller("GameCompleteController", function ($scope) {
+    app.controller("GameCompleteController", function (Game) {
         var vm = this;
 
         function gotoMenu() {
             // TODO: ugly hack. one controller should not ask another controller for this stuff. Should refactor to a service!
-            $scope.main.state = 'MainMenu';
+            Game.setState("MainMenu");
         }
 
         //exports

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="MainController as main">
+
+<h1>Hello! {{main.hello}}</h1>
+<div ng-if="main.good">
+    <img ng-src="{{main.get()}}" alt=""/>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
+
+<script>
+    var app = angular.module("app", []);
+
+    app.controller("MainController", function ($interval) {
+        var vm = this;
+        var images = ["textAwesome.png", "textCool.png", "textDoingGreat.png", "textGreat.png", "textPerfect.png", "textWellDone.png", "textYouRock.png"];
+        var index = Math.floor(Math.random() * images.length);
+
+        vm.good = true;
+        vm.hello = "YO!";
+
+        var tick = $interval(function () {
+            console.log("tick!");
+        }, 1000);
+
+        vm.get = function () {
+            return "img/" + images[index];
+        }
+    })
+</script>
+
+</body>
+</html>
