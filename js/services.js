@@ -14,14 +14,13 @@ app.factory("RandomColor", function () {
   }
 })
 
-//TODO: different layout, less space between elements
 app.factory("Grid", function (Gameplay) {
   var totalWidth = 320;
   var totalHeight = 400;
   var itemWidth = 60;
   var itemHeight = 60;
   return {
-    getPos: function (id) {
+    getPos: function (index) {
       var curLevel = Gameplay.getCurLevel();
       var levelRows = curLevel.rows;
       var levelCols = curLevel.cols;
@@ -29,9 +28,23 @@ app.factory("Grid", function (Gameplay) {
       var dy = totalHeight / levelRows;
       var offsetX = (dx - itemWidth) / 2;
       var offsetY = (dy - itemHeight) / 2;
-      var x = offsetX + (id % levelCols) * dx;
-      var y = offsetY + Math.floor(id / levelCols) * dy;
+      var x = offsetX + (index % levelCols) * dx;
+      var y = offsetY + Math.floor(index /levelCols) * dy;
       return {x: x, y:y};
+    },
+    getPos2: function (index) {
+      var curLevel = Gameplay.getCurLevel();
+      var levelRows = curLevel.rows;
+      var levelCols = curLevel.cols;
+      var space = 10;
+      var allItemsWidth = itemWidth * levelCols;
+      var allItemsHeight = itemHeight * levelRows;
+      var offsetX = (totalWidth - allItemsWidth) / 2 - space;
+      var offsetY = (totalHeight - allItemsHeight) / 2 - space;
+
+      var x = (index % levelCols) * (itemWidth + space) + offsetX;
+      var y = Math.floor(index / levelCols) * (itemHeight + space) + offsetY;
+      return {x:x, y:y};
     }
   }
 })

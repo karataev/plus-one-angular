@@ -6,7 +6,7 @@ app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout, Uti
   return {
     link: function (scope, el, attrs) {
       //console.log(scope.$index, scope.item.id);
-      var pos = Grid.getPos(scope.$index);
+      var pos = Grid.getPos2(scope.$index);
       var color = RandomColor.get();
       el.addClass('circle-item circle-tweens');
       el.css({
