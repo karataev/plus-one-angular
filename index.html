@@ -12,7 +12,6 @@
 
 <!--TODO: remove 300ms delay for mobile devices-->
 <div class="wrapper" ng-cloak>
-    <!--TODO: Main Menu-->
     <div ng-if="main.state=='MainMenu'" class="window">
         <img class="img-yellow-line1" src="img/yellowLine.png" alt=""/>
         <img src="img/mainMenuTitle.png" alt="Plus One" class="main-menu-title"/>
@@ -46,10 +45,19 @@
 
     </div>
 
-    <!--TODO: credits-->
     <div ng-if="main.state=='Credits'" class="window">
-        <h3>Credits!</h3>
-        <button class="btn btn-primary" ng-click="main.state='MainMenu'">Back</button>
+        <br/>
+        <a href="http://postepenno.com" target="_blank">
+            <img src="img/postepennoLogo.png" alt=""/>
+        </a>
+
+        <br/><br/>
+        <a href="mailto:eugene.karataev@gmail.com">
+            <img src="img/karataev.png" alt=""/>
+        </a>
+        <br/><br/>
+        <img src="img/musicCredits.png" alt=""/>
+        <button class="bt-credits-back" ng-click="main.state='MainMenu'">Back</button>
     </div>
 
     <!--TODO: game complete-->
