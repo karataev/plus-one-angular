@@ -14,9 +14,10 @@
 <!--TODO: Hermes font-->
 <div class="wrapper" ng-cloak>
     <!--TODO: Main Menu-->
-    <!--TODO: add yellow lines-->
     <div ng-if="main.state=='MainMenu'" class="window">
+        <img class="img-yellow-line1" src="img/yellowLine.png" alt=""/>
         <img src="img/mainMenuTitle.png" alt="Plus One" class="main-menu-title"/>
+        <img class="img-yellow-line2" src="img/yellowLine.png" alt=""/>
         <button class="btn btn-primary" ng-click="main.startGame()">Play</button>
         <button class="btn btn-warning" ng-click="main.state='Credits'">Credits</button>
     </div>

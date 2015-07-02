@@ -14,8 +14,16 @@
     overflow:hidden; /*избегаем выпадающих марджинов*/
 }
 
+.img-yellow-line1 {
+    margin-top: 50px;
+}
+
+.img-yellow-line2 {
+    margin-bottom: 20px;
+}
+
 .main-menu-title {
-    margin-top: 100px;
+    /*margin-top: 100px;*/
 }
 
 .gameplay-ui {

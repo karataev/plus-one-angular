@@ -10,6 +10,7 @@ app.animation(".circle-tweens", function () {
       TweenMax.set(el, {scale:0});
       TweenMax.to(el, 0.5, {scale:1, ease:Back.easeOut, delay:delay, onComplete:done});
     },
+    //TODO dissapear with alpha, like in original game
     leave: function (el, done) {
       TweenMax.to(el, 0.5, {scale:0, onComplete:done});
     }
