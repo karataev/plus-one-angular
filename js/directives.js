@@ -17,6 +17,9 @@ app.directive("circleItem", function (RandomColor, Grid, Gameplay, $timeout, Uti
 
       el.on('mousedown', function (e) {
         e.preventDefault();
+      })
+
+      el.on('click', function (e) {
 
         if (Gameplay.isCorrect(scope.item.id)) {
           el.off();
